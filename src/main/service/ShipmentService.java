@@ -18,8 +18,7 @@ public class ShipmentService {
     }
 
     public String validateCalculatePrintSaveAndNotify(Shipment shipment) {
-        if (!shipment.getCustomer().isActive()
-                || shipment.getCustomer().isSuspended()) {
+        if (!isCustomerAllowed(shipment)) {
             return "ERROR_CUSTOMER";
         }
 
@@ -112,5 +111,10 @@ public class ShipmentService {
         return output
                 + " | "
                 + notificationService.confirmationFor(shipment);
+    }
+
+    private boolean isCustomerAllowed(Shipment shipment) {
+        return shipment.getCustomer().isActive()
+                && !shipment.getCustomer().isSuspended();
     }
 }

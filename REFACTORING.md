@@ -7,4 +7,5 @@
 | validateCalculatePrintSaveAndNotify | Duplication de code                          | Supprimer le code en double et utilisation d'un if ternaire | La duplication est supprimée et la méthode est plus courte                       |  
 | validateCalculatePrintSaveAndNotify | Trop de if imbriqués dans la méthode         | Changer les if par des return                               | Méthode plus lisible et plus simple                                              |
 | validateCalculatePrintSaveAndNotify | La méthode fais trop de choses en même temps | création d'une méthode completeShipment                     | La finalisation possède maintenant sa propre responsabilité                      |
-|                                     |                                              |                                                             |                                                                                  |
+| validateCalculatePrintSaveAndNotify | La méthode fais trop de choses en même temps | création d'une méthode isCustomerAllowed                    | La validation du client possède maintenant sa propre responsabilité              |
+|                                            |                                                             |                                                             |
