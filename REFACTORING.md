@@ -1,8 +1,9 @@
 # Journal de refactoring
 
-| Classe/méthode                      | Problème observé                             | Refactoring appliqué                                        | Justification                                                                    |
-|-------------------------------------|----------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------|
-| canCarryHazardous                   | Trop de if manuel                            | Remplacer par un test bitwise                               | Le code est moins long mais gère toujours toutes les combinaisons de permissions |
+| Classe/méthode                  | Problème observé                             | Refactoring appliqué                                        | Justification                                                                    |
+|---------------------------------|----------------------------------------------|-------------------------------------------------------------|----------------------------------------------------------------------------------|
+| canCarryHazardous               | Trop de if manuel                            | Remplacer par un test bitwise                               | Le code est moins long mais gère toujours toutes les combinaisons de permissions |
 | validateCalculatePrintSaveAndNotify | La méthode fais trop de choses en même temps | création d'une méthode calculateTotal                       | Le calcul du prix possède maintenant sa propre responsabilité                    |
 | validateCalculatePrintSaveAndNotify | Duplication de code                          | Supprimer le code en double et utilisation d'un if ternaire | La duplication est supprimée et la méthode est plus courte                       |  
-|                                     |                                              |                                                             |                                                                                  |
+| validateCalculatePrintSaveAndNotify | Trop de if imbriqués dans la méthode         | Changer les if par des return                               | Méthode plus lisible et plus simple                                              |
+|                                 |                                              |                                                             |                                                                                  |
