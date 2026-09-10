@@ -5,16 +5,7 @@ import main.domain.Ship;
 
 public class PermissionService {
     public boolean canCarryHazardous(Ship ship) {
-        int permissions = ship.getPermissions();
-        if (permissions == Permissions.CARRY_HAZARDOUS) return true;
-        if (permissions == Permissions.VIEW_MANIFEST + Permissions.CARRY_HAZARDOUS) return true;
-        if (permissions == Permissions.EDIT_MANIFEST + Permissions.CARRY_HAZARDOUS) return true;
-        if (permissions == Permissions.VIEW_MANIFEST + Permissions.EDIT_MANIFEST + Permissions.CARRY_HAZARDOUS) return true;
-        if (permissions == Permissions.CARRY_HAZARDOUS + Permissions.CROSS_RESTRICTED_SECTOR) return true;
-        if (permissions == Permissions.VIEW_MANIFEST + Permissions.CARRY_HAZARDOUS + Permissions.CROSS_RESTRICTED_SECTOR) return true;
-        if (permissions == Permissions.EDIT_MANIFEST + Permissions.CARRY_HAZARDOUS + Permissions.CROSS_RESTRICTED_SECTOR) return true;
-        if (permissions == 15) return true;
-        return false;
+        return (ship.getPermissions() & Permissions.CARRY_HAZARDOUS) != 0;
     }
 
     public boolean cannotCrossRestrictedSector(Ship ship) {
