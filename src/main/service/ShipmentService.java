@@ -32,7 +32,7 @@ public class ShipmentService {
         double totalValue = cargoSummary.totalValue;
         boolean hazardous = cargoSummary.hazardous;
 
-        if (totalWeight > shipment.getShip().getCapacity()) {
+        if (exceedsShipCapacity(shipment, totalWeight)) {
             return "ERROR_CAPACITY";
         }
 
@@ -150,5 +150,12 @@ public class ShipmentService {
             this.totalValue = totalValue;
             this.hazardous = hazardous;
         }
+    }
+
+    private boolean exceedsShipCapacity(
+            Shipment shipment,
+            double totalWeight) {
+
+        return totalWeight > shipment.getShip().getCapacity();
     }
 }
