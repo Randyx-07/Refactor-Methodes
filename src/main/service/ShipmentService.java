@@ -26,18 +26,11 @@ public class ShipmentService {
             return "ERROR_EMPTY";
         }
 
-        double totalWeight = 0;
-        double totalValue = 0;
-        boolean hazardous = false;
+        CargoSummary cargoSummary = summarizeCargo(shipment);
 
-        for (Cargo item : shipment.getCargo()) {
-            totalWeight += item.getWeight();
-            totalValue += item.getDeclaredValue();
-
-            if (item.isHazardous()) {
-                hazardous = true;
-            }
-        }
+        double totalWeight = cargoSummary.totalWeight;
+        double totalValue = cargoSummary.totalValue;
+        boolean hazardous = cargoSummary.hazardous;
 
         if (totalWeight > shipment.getShip().getCapacity()) {
             return "ERROR_CAPACITY";
@@ -128,5 +121,34 @@ public class ShipmentService {
 
         return hazardous
                 && !permissionService.canCarryHazardous(shipment.getShip());
+    }
+
+    private CargoSummary summarizeCargo(Shipment shipment) {
+        double totalWeight = 0;
+        double totalValue = 0;
+        boolean hazardous = false;
+
+        for (Cargo item : shipment.getCargo()) {
+            totalWeight += item.getWeight();
+            totalValue += item.getDeclaredValue();
+            hazardous = hazardous || item.isHazardous();
+        }
+
+        return new CargoSummary(totalWeight, totalValue, hazardous);
+    }
+
+    private static class CargoSummary {
+        private final double totalWeight;
+        private final double totalValue;
+        private final boolean hazardous;
+
+        private CargoSummary(
+                double totalWeight,
+                double totalValue,
+                boolean hazardous) {
+            this.totalWeight = totalWeight;
+            this.totalValue = totalValue;
+            this.hazardous = hazardous;
+        }
     }
 }
