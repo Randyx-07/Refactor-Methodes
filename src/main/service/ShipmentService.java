@@ -43,8 +43,7 @@ public class ShipmentService {
             return "ERROR_CAPACITY";
         }
 
-        if (hazardous
-                && !permissionService.canCarryHazardous(shipment.getShip())) {
+        if (containsUnauthorizedHazardousCargo(shipment, hazardous)) {
             return "ERROR_PERMISSION";
         }
 
@@ -121,5 +120,13 @@ public class ShipmentService {
         return output
                 + " | "
                 + notificationService.confirmationFor(shipment);
+    }
+
+    private boolean containsUnauthorizedHazardousCargo(
+            Shipment shipment,
+            boolean hazardous) {
+
+        return hazardous
+                && !permissionService.canCarryHazardous(shipment.getShip());
     }
 }
