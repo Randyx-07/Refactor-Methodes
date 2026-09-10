@@ -30,7 +30,8 @@ public class ShipmentService {
                         if (item.isHazardous()) hazardous = true;
                     }
                     if (totalWeight > shipment.getShip().getCapacity()) return "ERROR_CAPACITY";
-                    if (hazardous && !permissionService.canCarryHazardous(shipment.getShip())) return "ERROR_PERMISSION";
+                    if (hazardous && !permissionService.canCarryHazardous(shipment.getShip()))
+                        return "ERROR_PERMISSION";
 
                     double total = calculateTotal(
                             shipment,
@@ -40,17 +41,16 @@ public class ShipmentService {
 
                     shipment.setTotal(total);
                     shipment.setStatus("READY");
-                    String output;
-                    if (total > 2000) {
-                        output = "PRIORITY | " + shipment.getReference() + " | " + String.format("%.2f", total);
-                        repository.save(shipment);
-                        output += " | " + notificationService.confirmationFor(shipment);
-                    } else {
-                        output = "REGULAR | " + shipment.getReference() + " | " + String.format("%.2f", total);
-                        repository.save(shipment);
-                        output += " | " + notificationService.confirmationFor(shipment);
-                    }
-                    return output;
+                    String category = total > 2000 ? "PRIORITY" : "REGULAR";
+                    String output = category
+                            + " | "
+                            + shipment.getReference()
+                            + " | "
+                            + String.format("%.2f", total);
+
+                    repository.save(shipment);
+
+                    return output + " | " + notificationService.confirmationFor(shipment);
                 } else {
                     return "ERROR_EMPTY";
                 }
