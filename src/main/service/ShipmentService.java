@@ -49,27 +49,11 @@ public class ShipmentService {
             return "ERROR_PERMISSION";
         }
 
-        double total = calculateTotal(
+        return completeShipment(
                 shipment,
                 totalWeight,
                 totalValue,
                 hazardous);
-
-        shipment.setTotal(total);
-        shipment.setStatus("READY");
-
-        String category = total > 2000 ? "PRIORITY" : "REGULAR";
-        String output = category
-                + " | "
-                + shipment.getReference()
-                + " | "
-                + String.format("%.2f", total);
-
-        repository.save(shipment);
-
-        return output
-                + " | "
-                + notificationService.confirmationFor(shipment);
     }
 
     private double calculateTotal(
@@ -99,5 +83,34 @@ public class ShipmentService {
                 shipment.getCustomer());
 
         return total;
+    }
+
+    private String completeShipment(
+            Shipment shipment,
+            double totalWeight,
+            double totalValue,
+            boolean hazardous) {
+
+        double total = calculateTotal(
+                shipment,
+                totalWeight,
+                totalValue,
+                hazardous);
+
+        shipment.setTotal(total);
+        shipment.setStatus("READY");
+
+        String category = total > 2000 ? "PRIORITY" : "REGULAR";
+        String output = category
+                + " | "
+                + shipment.getReference()
+                + " | "
+                + String.format("%.2f", total);
+
+        repository.save(shipment);
+
+        return output
+                + " | "
+                + notificationService.confirmationFor(shipment);
     }
 }
