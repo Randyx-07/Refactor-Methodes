@@ -53,27 +53,18 @@ public class ShipmentService {
             double totalValue,
             boolean hazardous) {
 
-        double total = pricingService.calculatePrice(
+        double transportPrice = calculateTransportPrice(
+                shipment,
                 totalWeight,
                 totalValue,
-                hazardous,
-                shipment.getOrigin().getName(),
-                shipment.getOrigin().getSector(),
-                shipment.getOrigin().getSecurityLevel(),
-                shipment.getDestination().getName(),
-                shipment.getDestination().getSector(),
-                shipment.getDestination().getSecurityLevel(),
-                shipment.getCustomer().getLoyaltyYears(),
-                shipment.getCustomer().isActive(),
-                shipment.getCustomer().isSuspended(),
-                shipment.getDepartureDate());
+                hazardous);
 
-        total += pricingService.calculateInsurance(
+        double insurancePrice = calculateInsurancePrice(
+                shipment,
                 totalValue,
-                hazardous,
-                shipment.getCustomer());
+                hazardous);
 
-        return total;
+        return transportPrice + insurancePrice;
     }
 
     private String completeShipment(
@@ -157,5 +148,38 @@ public class ShipmentService {
             double totalWeight) {
 
         return totalWeight > shipment.getShip().getCapacity();
+    }
+
+    private double calculateTransportPrice(
+            Shipment shipment,
+            double totalWeight,
+            double totalValue,
+            boolean hazardous) {
+
+        return pricingService.calculatePrice(
+                totalWeight,
+                totalValue,
+                hazardous,
+                shipment.getOrigin().getName(),
+                shipment.getOrigin().getSector(),
+                shipment.getOrigin().getSecurityLevel(),
+                shipment.getDestination().getName(),
+                shipment.getDestination().getSector(),
+                shipment.getDestination().getSecurityLevel(),
+                shipment.getCustomer().getLoyaltyYears(),
+                shipment.getCustomer().isActive(),
+                shipment.getCustomer().isSuspended(),
+                shipment.getDepartureDate());
+    }
+
+    private double calculateInsurancePrice(
+            Shipment shipment,
+            double totalValue,
+            boolean hazardous) {
+
+        return pricingService.calculateInsurance(
+                totalValue,
+                hazardous,
+                shipment.getCustomer());
     }
 }
