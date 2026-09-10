@@ -99,22 +99,27 @@ public class ShipmentService {
         shipment.setTotal(total);
         shipment.setStatus("READY");
 
+        repository.save(shipment);
+
+        return buildConfirmation(shipment, total);
+    }
+
+    private boolean isCustomerAllowed(Shipment shipment) {
+        return shipment.getCustomer().isActive()
+                && !shipment.getCustomer().isSuspended();
+    }
+
+    private String buildConfirmation(Shipment shipment, double total) {
         String category = total > 2000 ? "PRIORITY" : "REGULAR";
+
         String output = category
                 + " | "
                 + shipment.getReference()
                 + " | "
                 + String.format("%.2f", total);
 
-        repository.save(shipment);
-
         return output
                 + " | "
                 + notificationService.confirmationFor(shipment);
-    }
-
-    private boolean isCustomerAllowed(Shipment shipment) {
-        return shipment.getCustomer().isActive()
-                && !shipment.getCustomer().isSuspended();
     }
 }
