@@ -32,13 +32,11 @@ public class ShipmentService {
                     if (totalWeight > shipment.getShip().getCapacity()) return "ERROR_CAPACITY";
                     if (hazardous && !permissionService.canCarryHazardous(shipment.getShip())) return "ERROR_PERMISSION";
 
-                    double total = pricingService.calculatePrice(
-                            totalWeight, totalValue, hazardous,
-                            shipment.getOrigin().getName(), shipment.getOrigin().getSector(), shipment.getOrigin().getSecurityLevel(),
-                            shipment.getDestination().getName(), shipment.getDestination().getSector(), shipment.getDestination().getSecurityLevel(),
-                            shipment.getCustomer().getLoyaltyYears(), shipment.getCustomer().isActive(), shipment.getCustomer().isSuspended(),
-                            shipment.getDepartureDate());
-                    total += pricingService.calculateInsurance(totalValue, hazardous, shipment.getCustomer());
+                    double total = calculateTotal(
+                            shipment,
+                            totalWeight,
+                            totalValue,
+                            hazardous);
 
                     shipment.setTotal(total);
                     shipment.setStatus("READY");
@@ -62,5 +60,34 @@ public class ShipmentService {
         } else {
             return "ERROR_CUSTOMER";
         }
+    }
+
+    private double calculateTotal(
+            Shipment shipment,
+            double totalWeight,
+            double totalValue,
+            boolean hazardous) {
+
+        double total = pricingService.calculatePrice(
+                totalWeight,
+                totalValue,
+                hazardous,
+                shipment.getOrigin().getName(),
+                shipment.getOrigin().getSector(),
+                shipment.getOrigin().getSecurityLevel(),
+                shipment.getDestination().getName(),
+                shipment.getDestination().getSector(),
+                shipment.getDestination().getSecurityLevel(),
+                shipment.getCustomer().getLoyaltyYears(),
+                shipment.getCustomer().isActive(),
+                shipment.getCustomer().isSuspended(),
+                shipment.getDepartureDate());
+
+        total += pricingService.calculateInsurance(
+                totalValue,
+                hazardous,
+                shipment.getCustomer());
+
+        return total;
     }
 }
